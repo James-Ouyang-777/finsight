@@ -34,7 +34,7 @@ def dfs():
     def get_BIGTECH_data():
         historical_datas = {}
         for ticker in ticker_list:
-            historical_datas[ticker] = get_data(ticker, start_date="01/01/2024")
+            historical_datas[ticker] = get_data(ticker, start_date="03/01/2024")
 
         return historical_datas
 
@@ -56,7 +56,7 @@ def dfs():
 
         #multilayer comparison
 
-        tickers = st.multiselect("Choose Ticker Symbols", ticker_list, [ticker_list[0]])
+        s_ticker = st.selectbox("Choose Ticker Symbol", ticker_list)
 
 
         for key, df in all_data.items():
@@ -65,27 +65,78 @@ def dfs():
 
         concatenated_df = pd.concat(all_data.values(), ignore_index=True)
 
-        concatenated_df = concatenated_df[concatenated_df['ticker'].isin(tickers)]
+        # concatenated_df = all_data
+        concatenated_df = concatenated_df[concatenated_df['ticker'] == s_ticker]
 
-        chart = (
-            alt.Chart(concatenated_df)
-            .mark_area(opacity=0.4)
-            .encode(
-                x="date:T",
-                y=alt.Y("close", stack=None),
-                color="ticker:N",
-            )
+        df = concatenated_df
+
+        # Calculate y-axis range
+        y_min = df['low'].min() * 0.95  # 5% below the minimum low value
+        y_max = df['high'].max() * 1.05  # 5% above the maximum high value
+
+        # Base chart
+        base = alt.Chart(df).encode(
+            x=alt.X('date:T', title='Date')
         )
-        st.altair_chart(chart, use_container_width=True)
 
-        st.dataframe(concatenated_df)
+        # Rule for the high-low range
+        rule = base.mark_rule().encode(
+            y=alt.Y('low:Q', title='Price', scale=alt.Scale(domain=[y_min, y_max])),
+            y2='high:Q'
+        )
+
+        # Bars for the open-close range
+        bars = base.mark_bar().encode(
+            y='open:Q',
+            y2='close:Q',
+            color=alt.condition("datum.open <= datum.close",
+                                alt.value("green"),  # The bar is green if the close is higher than the open
+                                alt.value("red"))  # The bar is red if the close is lower than the open
+        )
+
+        # Layer the rule and bars to create the candlestick chart
+        candlestick_chart = alt.layer(rule, bars).properties(
+            width=600,
+            height=400,
+            title='Candlestick Chart'
+        )
+
+        # y_min = df['low'].min() * 0.98  # 5% below the minimum low value
+        # y_max = df['high'].max() * 1.02  # 5% above the maximum high value
+
+
+        # # Create the base chart with the line
+        # line = alt.Chart(concatenated_df).mark_line().encode(
+        #     x="date:T",
+        #     y=alt.Y("close", stack=None),
+        #     color="ticker:N",
+        # )
+
+        # # Create the points with filled circles
+        # points = alt.Chart(concatenated_df).mark_point(filled=True).encode(
+        #     x="date:T",
+        #     y=alt.Y("close", stack=None),
+        #     color="ticker:N",
+        # )
+
+        # # Layer the line and points together
+        # chart = alt.layer(line, points).properties(
+        #     width=600,
+        #     height=400,
+            
+        # )
+
+
+        st.altair_chart(candlestick_chart, use_container_width=True)
+
+        # st.dataframe(concatenated_df)
 
         model = load_model("model_training/lstm_model.h5")
         print(concatenated_df.head())
         answer = get_predictions(new_data=concatenated_df,model=model)
         date = concatenated_df.iloc[-1]['date']
 
-        st.write(f'prediction based on data up to {date} for tommorow\'s close: {answer}')
+        st.write(f'LSTM RNN prediction based on data up to {date} for next close: {answer}')
 
 
 
