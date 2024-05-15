@@ -12,17 +12,20 @@ from streamlit.hello.utils import show_code
 import streamlit as st
 from streamlit.logger import get_logger
 
+from helpers.data import price_transform, get_predictions
+from tensorflow.keras.models import load_model
+
 LOGGER = get_logger(__name__)
 
 
-def run():
-    st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
-    )
+# def run():
+#     st.set_page_config(
+#         page_title="Hello",
+#         page_icon="👋",
+#     )
 
-if __name__ == "__main__":
-    run()
+# if __name__ == "__main__":
+#     run()
 
 def dfs():
     ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'BA', 'AMD', 'TSLA']
@@ -76,6 +79,14 @@ def dfs():
         st.altair_chart(chart, use_container_width=True)
 
         st.dataframe(concatenated_df)
+
+        model = load_model("model_training/lstm_model.h5")
+        print(concatenated_df.head())
+        answer = get_predictions(new_data=concatenated_df,model=model)
+        date = concatenated_df.iloc[-1]['date']
+
+        st.write(f'prediction based on data up to {date} for tommorow\'s close: {answer}')
+
 
 
 
