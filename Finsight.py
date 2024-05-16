@@ -129,14 +129,14 @@ def dfs():
 
         st.altair_chart(candlestick_chart, use_container_width=True)
 
-        # st.dataframe(concatenated_df)
+        st.dataframe(concatenated_df)
 
         model = load_model("model_training/lstm_model.h5")
         print(concatenated_df.head())
         answer = get_predictions(new_data=concatenated_df,model=model)
         date = concatenated_df.iloc[-1]['date']
 
-        st.write(f'LSTM RNN prediction based on data up to {date} for next close: {answer}')
+        st.write(f'LSTM RNN prediction based on data leading up to {date} for next close: ${round(answer[0],2)}')
 
 
 
