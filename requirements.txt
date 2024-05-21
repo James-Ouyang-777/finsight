@@ -8,3 +8,4 @@ yahoo_fin
 tensorflow
 scikit-learn
 matplotlib
+datetime
