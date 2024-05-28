@@ -20,7 +20,7 @@ LOGGER = get_logger(__name__)
 
 
 def dfs():
-    ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'BA', 'AMD', 'TSLA', 'NVDA']
+    ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'BA', 'AMD', 'TSLA', 'NVDA', 'MSFT']
 
     @st.cache_data
     def get_BIGTECH_data():
@@ -102,8 +102,17 @@ def dfs():
             # st.write(f'{mpath[28:-3]}: ${round(answer[0],2)}')
             prediction_entry.append(answer[0])
 
-
-
+        # def flatten_range(op,hi,lo,clo):
+        #     hi = max(op,clo,hi)
+        #     lo = min(op,clo,lo)
+        #     return (op, hi, lo, clo)
+        def reasonable_range():
+            # if prediction_entry[1] < prediction_entry[4]:
+            #     prediction_entry[1], prediction_entry[4] = prediction_entry[4], prediction_entry[1]
+            prediction_entry[2] = max(prediction_entry[1], prediction_entry[2], prediction_entry[4])
+            prediction_entry[3] = min(prediction_entry[1], prediction_entry[3], prediction_entry[4])
+        
+        reasonable_range()
         prediction_entry += [0, 0,'ticker']
         ### New prediction display
 
@@ -168,7 +177,7 @@ def dfs():
             st.altair_chart(candlestick_chart, use_container_width=True)
         two_week_chart()
 
-        st.write(f'LSTM RNN prediction based on data leading up to {date} for next day')
+        st.write(f'Model prediction based on data leading up to {date} for next day')
         # prediction_entry = [date+timedelta(days=1)]
 
         ind = 1
