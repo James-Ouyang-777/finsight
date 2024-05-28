@@ -109,8 +109,8 @@ def dfs():
         # def reasonable_range():
             # if prediction_entry[1] < prediction_entry[4]:
             #     prediction_entry[1], prediction_entry[4] = prediction_entry[4], prediction_entry[1]
-        prediction_entry[2] = max(prediction_entry[1], prediction_entry[2], prediction_entry[4])
-        prediction_entry[3] = min(prediction_entry[1], prediction_entry[3], prediction_entry[4])
+        # prediction_entry[2] = max(prediction_entry[1], prediction_entry[2], prediction_entry[4])
+        # prediction_entry[3] = min(prediction_entry[1], prediction_entry[3], prediction_entry[4])
     
         # reasonable_range()
         prediction_entry += [0, 0,'ticker']
