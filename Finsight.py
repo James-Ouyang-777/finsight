@@ -20,7 +20,7 @@ LOGGER = get_logger(__name__)
 
 
 def dfs():
-    ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'AMD', 'TSLA', 'NVDA']
+    ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'AMD', 'NVDA']
 
     @st.cache_data
     def get_BIGTECH_data():
