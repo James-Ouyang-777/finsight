@@ -116,10 +116,10 @@ def dfs():
         ### New prediction display
 
         df2 = concatenated_df[-10:]
-        print(df2.columns)
+        # print(df2.columns)
         # print(prediction_entry.columns)
         df2.loc[len(df2)] = prediction_entry
-        print("ADDED")
+        # print("ADDED")
 
         def two_week_chart():
             # Calculate y-axis range
