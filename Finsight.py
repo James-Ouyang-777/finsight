@@ -18,6 +18,14 @@ from tensorflow.keras.models import load_model
 
 LOGGER = get_logger(__name__)
 
+@st.cache_data
+def load_models(models):
+    loaded_models = []
+    for mpath in models:
+        model = load_model(mpath)
+        loaded_models.append(model)
+    return loaded_models
+
 
 def dfs():
     ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'AMD', 'NVDA']
@@ -85,10 +93,6 @@ def dfs():
 
         # st.dataframe(concatenated_df)
 
-        models = ["model_training/LSTM_predict_open.h5", 
-                  "model_training/LSTM_predict_high.h5",
-                  "model_training/LSTM_predict_low.h5",
-                  "model_training/LSTM_predict_close.h5",]
         
         date = concatenated_df.iloc[-1]['date']
 
@@ -96,21 +100,16 @@ def dfs():
         # st.write(f'LSTM RNN prediction based on data leading up to {date} for next day')
         prediction_entry = [date+timedelta(days=1)]
 
-        for mpath in models:
-            model = load_model(mpath)
+        for model in loaded_models:
             answer = get_predictions(new_data=concatenated_df,model=model)
             # st.write(f'{mpath[28:-3]}: ${round(answer[0],2)}')
             prediction_entry.append(answer[0])
 
-        # def flatten_range(op,hi,lo,clo):
-        #     hi = max(op,clo,hi)
-        #     lo = min(op,clo,lo)
-        #     return (op, hi, lo, clo)
         # def reasonable_range():
             # if prediction_entry[1] < prediction_entry[4]:
             #     prediction_entry[1], prediction_entry[4] = prediction_entry[4], prediction_entry[1]
-        # prediction_entry[2] = max(prediction_entry[1], prediction_entry[2], prediction_entry[4])
-        # prediction_entry[3] = min(prediction_entry[1], prediction_entry[3], prediction_entry[4])
+        prediction_entry[2] = max(prediction_entry[1], prediction_entry[2], prediction_entry[4])
+        prediction_entry[3] = min(prediction_entry[1], prediction_entry[3], prediction_entry[4])
     
         # reasonable_range()
         prediction_entry += [0, 0,'ticker']
@@ -199,6 +198,11 @@ def dfs():
 st.set_page_config(page_title=" Stock Trader Insights", page_icon="📊")
 st.markdown("# Stock Trader Insights")
 st.sidebar.header("Stock Insights")
+models = ["model_training/LSTM_predict_open.h5", 
+            "model_training/LSTM_predict_high.h5",
+            "model_training/LSTM_predict_low.h5",
+            "model_training/LSTM_predict_close.h5",]
+loaded_models = load_models(models)
 
 dfs()
 
