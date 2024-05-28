@@ -20,13 +20,13 @@ LOGGER = get_logger(__name__)
 
 
 def dfs():
-    ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'BA', 'AMD', 'TSLA', 'NVDA', 'MSFT']
+    ticker_list = ['META', 'AMZN', 'AAPL', 'NFLX', 'GOOG', 'AMD', 'TSLA', 'NVDA']
 
     @st.cache_data
     def get_BIGTECH_data():
         historical_datas = {}
         for ticker in ticker_list:
-            historical_datas[ticker] = get_data(ticker, start_date="03/01/2024")
+            historical_datas[ticker] = get_data(ticker, start_date="03/03/2024")
 
         return historical_datas
 
