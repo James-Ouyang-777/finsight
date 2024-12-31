@@ -9,7 +9,7 @@ yahoo_fin
 scikit-learn
 matplotlib
 datetime
-tensorflow-cpu==2.12.0
-numpy<1.24
-streamlit==1.26.0
+tensorflow-cpu
+numpy<2
+# streamlit==1.26.0
 # Add other dependencies here
